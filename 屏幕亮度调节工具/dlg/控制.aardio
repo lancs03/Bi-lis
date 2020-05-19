@@ -1,0 +1,131 @@
+import win.ui;
+/*DSG{{*/
+var winform = win.form(text="aardio form";right=561;bottom=38;image=$"\res\t.png";bkBottom=4;bkLeft=4;bkRight=4;bkTop=4;border="none";exmode="toolwindow")
+winform.add(
+black={cls="plus";left=443;top=0;right=482;bottom=39;border={radius=-1};color=12674;foreRepeat="center";forecolor=0;notify=1;z=2};
+green={cls="plus";left=523;top=0;right=562;bottom=39;border={radius=-1};color=12674;foreRepeat="center";forecolor=32768;notify=1;z=4};
+red={cls="plus";left=483;top=0;right=522;bottom=39;border={radius=-1};color=12674;foreRepeat="center";forecolor=128;z=3};
+透明度={cls="plus";left=0;top=0;right=442;bottom=39;border={color=-16777216;radius=5;width=1};color=12674;foreRight=16;forecolor=-16777216;linearGradient=0;z=1}
+)
+/*}}*/
+
+import fsys;
+import fsys.ini;
+var filepath = fsys.appdata("/护眼模式/set.ini");
+var setini = fsys.ini(filepath);
+var 透明度 = tonumber(setini.read("透明度","数值","80"));
+var 颜色 = tonumber(setini.read("透明度","颜色","0"));
+if(颜色==0x000080){
+	颜色=0x800000;
+}
+
+//设置透明度工具条区间和动态效果
+winform.透明度.setTrackbarRange(1,255);
+winform.透明度.skin({
+    //进度条背景色
+	background={
+		default=0xFFFFFFFF
+	};
+	//滑块颜色
+	color={
+		default=0xFF823100;
+		hover=0xFF00AEFF
+	}
+})
+
+//更新颜色和透明度
+winform.透明度.foreground = 0xFF000000 + 颜色;
+winform.透明度.progressPos = 透明度;
+ 
+ 
+//设置单选颜色块的动态放大缩小效果
+var scaleSkin = {  
+	scale ={
+		active=1;  //放大100%
+		hover=0.8; //缩小为80%
+		default=0.6;//默认缩小60%
+	}; 
+	checked = { 
+        scale ={
+			active=1;  //放大100%
+			hover=0.8; //缩小为80%
+		};
+    }
+	group = "单选";
+}
+//使用效果
+winform.black.skin(scaleSkin);
+winform.red.skin(scaleSkin);
+winform.green.skin(scaleSkin);
+//判断哪个应该被选中
+if(颜色 == 0){
+	winform.black.checked = true;
+}elseif(颜色 == 0x800000){
+	winform.red.checked = true;
+}else {
+	winform.green.checked = true;
+} 
+ 
+ 
+//获取桌面工作区大小
+var rect = win.getWorkArea();
+//设置透明度工具条位置(右下角)
+winform.setPos(rect.right-winform.width,rect.bottom-winform.height);
+
+//修改透明度
+winform.透明度.onMouseMove = function(wParam,lParam){
+	if( wParam & 0x1/*_MK_LBUTTON*/ ){
+		if(winform.parent){
+			mainForm.transparent(winform.透明度.progressPos);
+			setini.write("透明度","数值",tostring(winform.透明度.progressPos));
+		}
+	}
+}
+
+//前置窗口,不然不点击工具条窗口不会消失
+win.setForeground(winform.hwnd);
+//窗体失去焦点立即关闭
+winform.onActivate = function(state,hwndOther,minimized){
+	if(!state) winform.close();
+}
+
+winform.red.oncommand = function(id,event){
+	winform.透明度.foreground = 0xFF800000;
+	if(winform.parent){
+		mainForm.bgcolor = 0x000080;
+		mainForm.redrawBackground();
+		mainForm.transparent(winform.透明度.progressPos);
+		setini.write("透明度","数值",tostring(winform.透明度.progressPos));
+		setini.write("透明度","颜色",tostring(0x000080));
+	}
+}
+
+winform.black.oncommand = function(id,event){
+	winform.透明度.foreground = 0xFF000000;
+	if(winform.parent){
+		mainForm.bgcolor = 0x000000;
+		mainForm.redrawBackground();
+		mainForm.transparent(winform.透明度.progressPos);
+		setini.write("透明度","数值",tostring(winform.透明度.progressPos));
+		setini.write("透明度","颜色",tostring(0x000000));
+	}
+}
+
+winform.green.oncommand = function(id,event){
+	winform.透明度.foreground = 0xFF008000;
+	if(winform.parent){
+		mainForm.bgcolor = 0x008000
+		mainForm.redrawBackground();
+		mainForm.transparent(winform.透明度.progressPos);
+		setini.write("透明度","数值",tostring(winform.透明度.progressPos));
+		setini.write("透明度","颜色",tostring(0x008000));
+	}
+}
+
+//使用分层圆角窗体特效
+import win.ui.layeredRound;
+win.ui.layeredRound(winform,5);
+
+winform.show();
+win.loopMessage();
+return winform;

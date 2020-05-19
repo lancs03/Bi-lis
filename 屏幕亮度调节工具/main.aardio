@@ -1,0 +1,63 @@
+import win.ui;
+/*DSG{{*/
+mainForm = win.form(text="护眼";right=486;bottom=364;bgcolor=0;border="none";exmode="toolwindow")
+mainForm.add()
+/*}}*/
+
+import fsys;
+import fsys.ini;
+var filepath = fsys.appdata("/护眼模式/set.ini");
+if(!io.exist(filepath)){
+    string.save(filepath,$"/res/set.ini");	
+}
+
+var setini = fsys.ini(filepath);
+var 透明度 = tonumber(setini.read("透明度","数值","80"));
+var 颜色 = tonumber(setini.read("透明度","颜色","0"));
+//根据配置,设置背景色
+mainForm.bgcolor = 颜色;
+//设置窗体覆盖在桌面工作区
+mainForm.setRect(..win.getRect(win.getDesktop(),true));
+//设置透明度
+mainForm.transparent(透明度);
+//穿透
+mainForm.modifyStyleEx(,0x20/*_WS_EX_TRANSPARENT*/);
+//置顶
+win.setTopmost(mainForm.hwnd);
+//注册系统快捷键(作用:关闭蒙版 Ctrl+Q )
+var hkId;
+mainForm.unreghotkey(hkId);
+hkId = mainForm.reghotkey(
+    function(id,mod,vk){
+        mainForm.close()
+    }
+    ,2/*_MOD_CONTROL*/,'Q'#
+);
+
+//弹出气泡提示
+import win.util.tray;
+var tray = win.util.tray(mainForm)
+tray.pop('双击这里打开透明度调节功能\n[Ctrl+Q]快捷键关闭\n由 HtmLayout.CN 提供',"屏幕亮度调节工具")
+tray.message = 0xACCF/*_WM_TRAYMESSAGE*/
+tray.tip = '屏幕亮度调节工具\n[Ctrl+Q] 快捷键关闭软件\n由 HtmLayout.CN 提供' //设置鼠标提示
+
+//窗体处理接收到鼠标在右下角图标上自定义的(0xACCF)事件
+//注意:此事件消息是可以自定义的哦
+mainForm.wndproc = {
+	[0xACCF/*_WM_TRAYMESSAGE*/ ] = function(hwnd,message,wParam,lParam){
+		if( lParam = 0x205/*_WM_RBUTTONUP*/ or lParam = 0x202/*_WM_LBUTTONUP*/ ){ 
+			var frmChild = mainForm.loadForm("\dlg\控制.aardio");
+			frmChild.show();
+	    }	
+	}
+}
+
+//设置开机启动
+import win.reg;
+reg = win.reg("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run")
+reg.setSzValue("屏幕亮度调节工具", io._exepath );
+reg.close()
+
+
+mainForm.show();
+return win.loopMessage();
