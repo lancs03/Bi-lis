@@ -119,6 +119,7 @@ winform.green.oncommand = function(id,event){
 		mainForm.transparent(winform.透明度.progressPos);
 		setini.write("透明度","数值",tostring(winform.透明度.progressPos));
 		setini.write("透明度","颜色",tostring(0x008000));
+		
 	}
 }
 

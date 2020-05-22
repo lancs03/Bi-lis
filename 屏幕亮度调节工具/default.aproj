@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project ver="10" name="屏幕亮度调节工具" libEmbed="true" icon="favicon.ico" ui="win" output="屏幕亮度调节工具.exe" CompanyName="Design By Htmlayout.cn" FileDescription="屏幕亮度调节工具" LegalCopyright="Copyright (C) Htmlayout.cn 2019" ProductName="屏幕亮度调节工具" InternalName="屏幕亮度调节工具" FileVersion="0.0.0.07" ProductVersion="0.0.0.07" publishDir="/Publish/" dstrip="true">
 	<file name="main.aardio" path="main.aardio" comment="main.aardio"/>
-	<folder name="资源文件" path="res" embed="true">
+	<folder name="资源文件" path="res" embed="true" local="false">
 		<file name="set.ini" path="res\set.ini" comment="res\set.ini"/>
 		<file name="t.png" path="res\t.png" comment="res\t.png"/>
 	</folder>
