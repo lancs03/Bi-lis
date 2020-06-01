@@ -50,6 +50,8 @@ mainForm.wndproc = {
 			frmChild.show();
 			var t=0;
 			t++;
+			var tt =1 ;
+			tt--; 
 	    }	
 	}
 }
