@@ -48,7 +48,8 @@ mainForm.wndproc = {
 		if( lParam = 0x205/*_WM_RBUTTONUP*/ or lParam = 0x202/*_WM_LBUTTONUP*/ ){ 
 			var frmChild = mainForm.loadForm("\dlg\控制.aardio");
 			frmChild.show();
-			winform.msgbox("新增889966");
+			var t=0;
+			t++;
 	    }	
 	}
 }
