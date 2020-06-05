@@ -52,10 +52,6 @@ mainForm.wndproc = {
 			t++;
 			var tt =1 ;
 			tt--;
-			var ss =88 ;
-			var s=t+ss;  
-			ss =8 ;
-
 	    }	
 	}
 }
